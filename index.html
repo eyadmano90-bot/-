@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>لوحة الطيار - Media Care Home</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+  body {
+    direction: rtl;
+    text-align: right;
+    font-family: 'Segoe UI', sans-serif;
+    background: #f4f6f8;
+    padding: 20px;
+  }
+  h1 {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  .card {
+    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    background: white;
+  }
+  .btn-status {
+    margin-left: 5px;
+  }
+  .status {
+    font-weight: bold;
+  }
+</style>
+</head>
+<body>
+
+<h1>لوحة الطيار</h1>
+
+<div id="ordersContainer" class="container"></div>
+
+<script>
+// بيانات الأوردرات مبدئياً (لاحقاً يمكن جلبها من Firebase أو Telegram API)
+let orders = [
+  {
+    id: 1,
+    seller: "أحمد",
+    phone: "01011111111",
+    from: "المنيب",
+    to: "الهرم",
+    type: "طرد صغير",
+    price: 50,
+    status: "معلقة"
+  },
+  {
+    id: 2,
+    seller: "منى",
+    phone: "01022222222",
+    from: "ترسا",
+    to: "المعادي",
+    type: "طرد كبير",
+    price: 80,
+    status: "معلقة"
+  }
+];
+
+// دالة عرض الأوردرات
+function displayOrders() {
+  const container = document.getElementById("ordersContainer");
+  container.innerHTML = ""; // مسح المحتوى القديم
+  orders.forEach(order => {
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `
+      <p><strong>رقم الأوردر:</strong> ${order.id}</p>
+      <p><strong>البائع:</strong> ${order.seller} - <strong>رقم الهاتف:</strong> ${order.phone}</p>
+      <p><strong>العنوان:</strong> ${order.from} → ${order.to}</p>
+      <p><strong>نوع الشحنة:</strong> ${order.type}</p>
+      <p><strong>السعر:</strong> ${order.price} جنيه</p>
+      <p><strong>الحالة:</strong> <span class="status">${order.status}</span></p>
+      <button class="btn btn-primary btn-status" onclick="updateStatus(${order.id}, 'في الطريق')">في الطريق</button>
+      <button class="btn btn-success btn-status" onclick="updateStatus(${order.id}, 'تم التوصيل')">تم التوصيل</button>
+      <button class="btn btn-danger btn-status" onclick="updateStatus(${order.id}, 'ملغى')">إلغاء</button>
+    `;
+    container.appendChild(card);
+  });
+}
+
+// دالة لتحديث الحالة
+function updateStatus(orderId, newStatus) {
+  orders = orders.map(order => {
+    if(order.id === orderId) order.status = newStatus;
+    return order;
+  });
+  displayOrders();
+}
+
+// عرض الأوردرات عند تحميل الصفحة
+displayOrders();
+</script>
+
+</body>
+</html>
